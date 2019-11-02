@@ -16,6 +16,7 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with ORB-SLAM2. If not, see <http://www.gnu.org/licenses/>.
+* 主要功能就是增删关键帧和地图点
 */
 
 #include "Map.h"
@@ -28,7 +29,7 @@ namespace ORB_SLAM2
 Map::Map():mnMaxKFid(0),mnBigChangeIdx(0)
 {
 }
-
+//添加关键帧
 void Map::AddKeyFrame(KeyFrame *pKF)
 {
     unique_lock<mutex> lock(mMutexMap);
@@ -36,13 +37,13 @@ void Map::AddKeyFrame(KeyFrame *pKF)
     if(pKF->mnId>mnMaxKFid)
         mnMaxKFid=pKF->mnId;
 }
-
+//增加地图点
 void Map::AddMapPoint(MapPoint *pMP)
 {
     unique_lock<mutex> lock(mMutexMap);
     mspMapPoints.insert(pMP);
 }
-
+//删除地图点
 void Map::EraseMapPoint(MapPoint *pMP)
 {
     unique_lock<mutex> lock(mMutexMap);
@@ -51,7 +52,7 @@ void Map::EraseMapPoint(MapPoint *pMP)
     // TODO: This only erase the pointer.
     // Delete the MapPoint
 }
-
+//删除关键帧
 void Map::EraseKeyFrame(KeyFrame *pKF)
 {
     unique_lock<mutex> lock(mMutexMap);
@@ -60,7 +61,7 @@ void Map::EraseKeyFrame(KeyFrame *pKF)
     // TODO: This only erase the pointer.
     // Delete the MapPoint
 }
-
+//设置参考地图点
 void Map::SetReferenceMapPoints(const vector<MapPoint *> &vpMPs)
 {
     unique_lock<mutex> lock(mMutexMap);
@@ -78,13 +79,13 @@ int Map::GetLastBigChangeIdx()
     unique_lock<mutex> lock(mMutexMap);
     return mnBigChangeIdx;
 }
-
+//获取所有关键帧
 vector<KeyFrame*> Map::GetAllKeyFrames()
 {
     unique_lock<mutex> lock(mMutexMap);
     return vector<KeyFrame*>(mspKeyFrames.begin(),mspKeyFrames.end());
 }
-
+//获取所有地图点
 vector<MapPoint*> Map::GetAllMapPoints()
 {
     unique_lock<mutex> lock(mMutexMap);
@@ -102,19 +103,19 @@ long unsigned int Map::KeyFramesInMap()
     unique_lock<mutex> lock(mMutexMap);
     return mspKeyFrames.size();
 }
-
+//获取参考地图点
 vector<MapPoint*> Map::GetReferenceMapPoints()
 {
     unique_lock<mutex> lock(mMutexMap);
     return mvpReferenceMapPoints;
 }
-
+//获取最大帧索引值
 long unsigned int Map::GetMaxKFid()
 {
     unique_lock<mutex> lock(mMutexMap);
     return mnMaxKFid;
 }
-
+//清空地图
 void Map::clear()
 {
     for(set<MapPoint*>::iterator sit=mspMapPoints.begin(), send=mspMapPoints.end(); sit!=send; sit++)
