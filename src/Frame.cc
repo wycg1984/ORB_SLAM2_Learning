@@ -29,8 +29,9 @@
 
 namespace ORB_SLAM2
 {
-
+//静态变量初始化
 long unsigned int Frame::nNextId=0;
+//标志此帧是否是初始化帧
 bool Frame::mbInitialComputations=true;
 float Frame::cx, Frame::cy, Frame::fx, Frame::fy, Frame::invfx, Frame::invfy;
 float Frame::mnMinX, Frame::mnMinY, Frame::mnMaxX, Frame::mnMaxY;
@@ -83,6 +84,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeSt
     // 同时对左右目提特征
     thread threadLeft(&Frame::ExtractORB,this,0,imLeft);
     thread threadRight(&Frame::ExtractORB,this,1,imRight);
+    //在这里等待两个线程结束再往下进行
     threadLeft.join();
     threadRight.join();
 
